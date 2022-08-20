@@ -2,46 +2,40 @@ package com.revature.models;
 
 import java.util.Objects;
 
-public class Tops {
-	
+public class Clothing {
+
 	private int itemNum;
+	private String category;
 	private String itemName;
 	private String color;
-	private char size;
-	private int inventory = 1000;
-	private double wholesalePrice = 1.99;
-	private double retailPrice = 19.99;
+	private String itemSize;
+	private double wholesalePrice;
+	private double retailPrice;
 	
-	public Tops(int itemNum, String itemName, String color, char size, int inventory, double wholesalePrice,
+	public Clothing(int itemNum, String category, String itemName, String color, String itemSize, double wholesalePrice,
 			double retailPrice) {
 		super();
 		this.itemNum = itemNum;
+		this.category = category;
 		this.itemName = itemName;
 		this.color = color;
-		this.size = size;
-		this.inventory = inventory;
+		this.itemSize = itemSize;
 		this.wholesalePrice = wholesalePrice;
 		this.retailPrice = retailPrice;
 	}
 
-	public Tops(String itemName, String color, char size, int inventory, double wholesalePrice, double retailPrice) {
+	public Clothing(String category, String itemName, String color, String itemSize, double wholesalePrice,
+			double retailPrice) {
 		super();
+		this.category = category;
 		this.itemName = itemName;
 		this.color = color;
-		this.size = size;
-		this.inventory = inventory;
+		this.itemSize = itemSize;
 		this.wholesalePrice = wholesalePrice;
 		this.retailPrice = retailPrice;
 	}
 
-	public Tops(String itemName, String color, char size) {
-		super();
-		this.itemName = itemName;
-		this.color = color;
-		this.size = size;
-	}
-
-	public Tops() {
+	public Clothing() {
 		super();
 	}
 
@@ -51,6 +45,14 @@ public class Tops {
 
 	public void setItemNum(int itemNum) {
 		this.itemNum = itemNum;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 	public String getItemName() {
@@ -69,20 +71,12 @@ public class Tops {
 		this.color = color;
 	}
 
-	public char getSize() {
-		return size;
+	public String getItemSize() {
+		return itemSize;
 	}
 
-	public void setSize(char size) {
-		this.size = size;
-	}
-
-	public int getInventory() {
-		return inventory;
-	}
-
-	public void setInventory(int inventory) {
-		this.inventory = inventory;
+	public void setItemSize(String itemSize) {
+		this.itemSize = itemSize;
 	}
 
 	public double getWholesalePrice() {
@@ -103,7 +97,7 @@ public class Tops {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(color, inventory, itemName, itemNum, retailPrice, size, wholesalePrice);
+		return Objects.hash(category, color, itemName, itemNum, itemSize, retailPrice, wholesalePrice);
 	}
 
 	@Override
@@ -114,18 +108,18 @@ public class Tops {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Tops other = (Tops) obj;
-		return Objects.equals(color, other.color) && inventory == other.inventory
+		Clothing other = (Clothing) obj;
+		return Objects.equals(category, other.category) && Objects.equals(color, other.color)
 				&& Objects.equals(itemName, other.itemName) && itemNum == other.itemNum
+				&& Objects.equals(itemSize, other.itemSize)
 				&& Double.doubleToLongBits(retailPrice) == Double.doubleToLongBits(other.retailPrice)
-				&& size == other.size
 				&& Double.doubleToLongBits(wholesalePrice) == Double.doubleToLongBits(other.wholesalePrice);
 	}
 
 	@Override
 	public String toString() {
-		return "Tops [itemNum=" + itemNum + ", itemName=" + itemName + ", color=" + color + ", size=" + size
-				+ ", inventory=" + inventory + ", wholesalePrice=" + wholesalePrice + ", retailPrice=" + retailPrice
+		return "Clothing [itemNum=" + itemNum + ", category=" + category + ", itemName=" + itemName + ", color=" + color
+				+ ", itemSize=" + itemSize + ", wholesalePrice=" + wholesalePrice + ", retailPrice=" + retailPrice
 				+ "]";
 	}
 	
