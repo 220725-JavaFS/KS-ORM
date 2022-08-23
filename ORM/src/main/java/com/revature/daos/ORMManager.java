@@ -1,11 +1,21 @@
 package com.revature.daos;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+
 public interface ORMManager {
 	
-	public void getInfoByItemNum(); //goal : take in a clothing object's int item number. return : clothing object
-	public void getInventoryOfAllItems(); //goal : take in nothing. return : list of clothing objects'inventories
-	public void insertNewItem(); //goal : take in a clothing object to create a new item record. return : nothing
-	public void updateItemInfo(); //goal : take in a clothing object to update its info using certain criteria. return : nothing
-	public void removeItemByItemNum(); //goal : take in a clothing object to delete the record. return : nothing
+	//C//
+	public void insertNewItem(Object o);
+	//R//
+	public <T> List<T> getInfoByItemNo(Class <T> unknownClass, int itemNUm);
+	public <T> List<T> getInventoryOfAll(Class <T> unkownClass);
+	//U//
+	public void updateByItemNo(Object o, int itemNum);
+	//D//
+	public void removeByItemNo(Object o, int itemNum);
+	
+	//Carolyn's convert string to fieldtype method 
+	public Object convertStringToFieldType(String input, Class<?> type) throws IllegalAccessException, InstantiationException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException;
 
 }
