@@ -20,12 +20,12 @@ public class Main {
 		Categories b = new Categories();
 		Class<?> c2 = a.getClass();
 		Class<?> c3 = b.getClass();
-		System.out.println(o.getInfoByItemNo(c2, 5));
 		System.out.println(o.getInventoryOfAll(c3));
-		o.removeByItemNo(a, 5);
+		System.out.println(o.getInfoByItemNo(c2, 1));
+
 		
 		
-		System.out.println("Understanding how to use reflection: ");
+		System.out.println("\nUnderstanding how to use reflection: ");
 
 		StringBuilder sqlStatement = new StringBuilder();
 		sqlStatement.append("insert into ");
@@ -38,7 +38,7 @@ public class Main {
 		System.out.println("\n.getName() method: \n" + c1.getName());
 		String[] y = c1.getName().split("\\.");
 		String className = y[y.length - 1];
-		System.out.println("\nClass Name: \n" + className);
+		System.out.println("\nClass Name: \n" + className.toLowerCase());
 		sqlStatement.append(className.toLowerCase());
 		
 		Field[] fields = c1.getDeclaredFields();

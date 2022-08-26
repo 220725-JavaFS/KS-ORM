@@ -97,7 +97,7 @@ public class ORMManagerImpl implements ORMManager{
 		try(Connection conn = ConnectionUtil.getConnection()){
 			String[] x = unknownClass.getName().split("\\.");
 			String className = x[x.length - 1];
-			String sql = "SELECT * from \"" + className.toLowerCase() + "\" full join categories on categories.category = " + className + ".category where itemnum = " 
+			String sql = "SELECT * from \"" + className.toLowerCase() + "\" full join categories on categories.category = " + className.toLowerCase() + ".category where itemnum = " 
 					+ itemNum + ";";	
 			Statement statement = conn.createStatement();
 			ResultSet result = statement.executeQuery(sql);
@@ -109,13 +109,14 @@ public class ORMManagerImpl implements ORMManager{
 					// create a new instance of the class being constructed
 					T newObject = unknownClass.getDeclaredConstructor().newInstance();
 				
-				Field[] fields = unknownClass.getFields();
+				Field[] fields = unknownClass.getDeclaredFields();
 				for (Field field : fields) {
 
 					String fieldName = field.getName();
-
+	
 					// obtain the appropriate getter (using the field name)
 					String setterName = "set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+				
 					try {
 						// getting the type of the setter parameter, based on the field type
 						Class<?> setterParamType = unknownClass.getDeclaredField(fieldName).getType();
@@ -123,9 +124,7 @@ public class ORMManagerImpl implements ORMManager{
 						// obtain the setter method using the setter name and setter parameter type
 						Method setter = unknownClass.getMethod(setterName, setterParamType);
 
-						// below we define a utility method to convert the string field value to the
-
-						// appropriate type for the field
+						// below we define a utility method to convert the string field value to appropriate type for the field
 						Object fieldValue = convertStringToFieldType(result.getString(fieldName), setterParamType);
 
 						// we invoke the setter to populate the field of the object that's being created
@@ -143,6 +142,7 @@ public class ORMManagerImpl implements ORMManager{
 				}
 
 				unknownObjects.add(newObject);
+				
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | NoSuchMethodException | SecurityException e1) {
 			// TODO Auto-generated catch block
@@ -172,7 +172,7 @@ public class ORMManagerImpl implements ORMManager{
 					// create a new instance of the class being constructed
 					T newObject = unknownClass.getDeclaredConstructor().newInstance();
 				
-				Field[] fields = unknownClass.getFields();
+				Field[] fields = unknownClass.getDeclaredFields();
 				for (Field field : fields) {
 
 					String fieldName = field.getName();
