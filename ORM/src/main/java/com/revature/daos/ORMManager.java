@@ -11,7 +11,7 @@ public interface ORMManager {
 	public <T> List<T> getInfoByItemNo(Class <T> unknownClass, int itemNUm);
 	public <T> List<T> getInventoryOfAll(Class <T> unkownClass);
 	//U//
-	public void updateByItemNo(Object o, int itemNum);
+	public void updateByItemNo(Object o, int itemNum, String column, String value);
 	//D//
 	public void removeByItemNo(Object o, int itemNum);
 	

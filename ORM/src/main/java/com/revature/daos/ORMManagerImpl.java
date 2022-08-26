@@ -18,13 +18,13 @@ public class ORMManagerImpl implements ORMManager{
 		
 			//Create initial SQL statement with stringBuilder (or Buffer)
 			StringBuilder sqlStatement = new StringBuilder();
-			sqlStatement.append("insert into ");
+			sqlStatement.append("insert into \"");
 			
 			// obtain object's class path and use it to obtain table name for SQL statement
 			Class<?> objectClass = o.getClass(); 
 			String[] y = objectClass.getName().split("\\.");
 			String className = y[y.length - 1];
-			sqlStatement.append(className);
+			sqlStatement.append(className.toLowerCase() + "\"");
 			
 			//hold Objects declared fields
 			Field[] fields = objectClass.getDeclaredFields();
@@ -57,7 +57,7 @@ public class ORMManagerImpl implements ORMManager{
 								Object fieldValue = getterMethod.invoke(o);
 
 								//adds field values to stringBuilder
-								valueBuilder.append(fieldValue + ", ");
+								valueBuilder.append("'" + fieldValue + "', ");
 
 							} catch (NoSuchMethodException e) {
 								e.printStackTrace();
@@ -84,7 +84,7 @@ public class ORMManagerImpl implements ORMManager{
 			
 			try(Connection conn = ConnectionUtil.getConnection()) {
 				PreparedStatement statement = conn.prepareStatement(sql);
-				statement.executeQuery();
+				statement.executeUpdate();
 
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -97,7 +97,7 @@ public class ORMManagerImpl implements ORMManager{
 		try(Connection conn = ConnectionUtil.getConnection()){
 			String[] x = unknownClass.getName().split("\\.");
 			String className = x[x.length - 1];
-			String sql = "SELECT * from " + className + " full join categories on categories.category = " + className + ".category where item_no = " 
+			String sql = "SELECT * from \"" + className.toLowerCase() + "\" full join categories on categories.category = " + className + ".category where itemnum = " 
 					+ itemNum + ";";	
 			Statement statement = conn.createStatement();
 			ResultSet result = statement.executeQuery(sql);
@@ -161,7 +161,7 @@ public class ORMManagerImpl implements ORMManager{
 		try(Connection conn = ConnectionUtil.getConnection()){
 			String[] x = unknownClass.getName().split("\\.");
 			String className = x[x.length - 1];
-			String sql = "SELECT * from " + className + ";";	
+			String sql = "SELECT * from \"" + className.toLowerCase() + "\";";	
 			Statement statement = conn.createStatement();
 			ResultSet result = statement.executeQuery(sql);
 			
@@ -220,67 +220,23 @@ public class ORMManagerImpl implements ORMManager{
 	}
 
 	@Override
-	public void updateByItemNo(Object o, int itemNum) {
+	public void updateByItemNo(Object o, int itemNum, String column, String value) {
 		//Create initial SQL statement with stringBuilder (or Buffer)
 		StringBuilder sqlStatement = new StringBuilder();
-		sqlStatement.append("update ");
+		sqlStatement.append("update \"");
 		
 		// obtain object's class path and use it to obtain table name for SQL statement
 		Class<?> objectClass = o.getClass(); 
 		String[] y = objectClass.getName().split("\\.");
 		String className = y[y.length - 1];
-		sqlStatement.append(className + " set ");
-		
-		//hold Objects declared fields
-		Field[] fields = objectClass.getDeclaredFields();
-		//iterate over fields
-		for (Field field : fields) {
-
-			String fieldName = field.getName();
-			// obtain the appropriate getter (using the field name)
-			//fieldName.substring(0,1).toUpperCase() + fieldName.substring(1) Capitalizes the first letter of the fieldName 
-			String getterName = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
-						
-						try {
-							// obtain the getter method from the class we are mapping
-							Method getterMethod = objectClass.getMethod(getterName);
-							// invoke that method on the object that we are mapping (to obtain corresponding values to declared fields) 
-							Object fieldValue = getterMethod.invoke(o);
-							
-							//skip the itemNum field as it is a serial in the table
-							if (fieldName == "itemNum") {
-								itemNum = Integer.valueOf(fieldValue.toString());
-								continue;
-							}if (fieldValue.getClass() == String.class) {
-								sqlStatement.append(fieldName + " = '" + fieldValue + "',");
-							} else {
-								sqlStatement.append(fieldName + " = " + fieldValue + ",");
-							}	
-
-						} catch (NoSuchMethodException e) {
-							e.printStackTrace();
-						} catch (SecurityException e) {
-							e.printStackTrace();
-						} catch (IllegalAccessException e) {
-							e.printStackTrace();
-						} catch (IllegalArgumentException e) {
-							e.printStackTrace();
-						} catch (InvocationTargetException e) {
-							e.printStackTrace();
-						}
-
-	}	
-		//adds fields and values to complete the SQL statement
-		sqlStatement.deleteCharAt(sqlStatement.length() - 1);
-		sqlStatement.append(" where id = " + itemNum + ";");
-
+		sqlStatement.append(className.toLowerCase() + "\" set " + column + "= '" + value + "' where itemnum ="  + itemNum + ";" );
 		
 		//converts StringBuilder SQL statement to String
 		String sql = sqlStatement.toString();
 		
 		try(Connection conn = ConnectionUtil.getConnection()) {
 			PreparedStatement statement = conn.prepareStatement(sql);
-			statement.executeQuery();
+			statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -291,20 +247,20 @@ public class ORMManagerImpl implements ORMManager{
 	public void removeByItemNo(Object o, int itemNum) {
 		//Create initial SQL statement with stringBuilder (or Buffer)
 		StringBuilder sqlStatement = new StringBuilder();
-		sqlStatement.append("delete from ");
+		sqlStatement.append("delete from \"");
 
 		// obtain object's class path and use it to obtain table name for SQL statement
 				Class<?> objectClass = o.getClass(); 
 				String[] y = objectClass.getName().split("\\.");
 				String className = y[y.length - 1];
-				sqlStatement.append(className + " where item_no = " + itemNum + ";");
+				sqlStatement.append(className.toLowerCase() + "\" where itemnum = " + itemNum + ";");
 				
 				//converts StringBuilder SQL statement to String
 				String sql = sqlStatement.toString();
 				
 				try(Connection conn = ConnectionUtil.getConnection()) {
 					PreparedStatement statement = conn.prepareStatement(sql);
-					statement.executeQuery();
+					statement.executeUpdate();
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}

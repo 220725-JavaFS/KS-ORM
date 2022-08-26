@@ -1,5 +1,8 @@
 package com.revature;
 
+import com.revature.daos.ORMManager;
+import com.revature.daos.ORMManagerImpl;
+import com.revature.models.Categories;
 import com.revature.models.Clothing;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -11,6 +14,16 @@ import java.util.Arrays;
 public class Main {
 	
 	public static void main(String[] args) {
+		
+		ORMManager o = new ORMManagerImpl();
+		Clothing a = new Clothing("TOPS", "T-SHIRT", "RED", "XS", 1.99, 14.95);
+		Categories b = new Categories();
+		Class<?> c2 = a.getClass();
+		Class<?> c3 = b.getClass();
+		System.out.println(o.getInfoByItemNo(c2, 5));
+		System.out.println(o.getInventoryOfAll(c3));
+		o.removeByItemNo(a, 5);
+		
 		
 		System.out.println("Understanding how to use reflection: ");
 
@@ -26,7 +39,7 @@ public class Main {
 		String[] y = c1.getName().split("\\.");
 		String className = y[y.length - 1];
 		System.out.println("\nClass Name: \n" + className);
-		sqlStatement.append(className);
+		sqlStatement.append(className.toLowerCase());
 		
 		Field[] fields = c1.getDeclaredFields();
 		StringBuilder fieldBuilder = new StringBuilder();
@@ -55,7 +68,7 @@ public class Main {
 							System.out.println("Field Value: " + fieldValue);
 							
 
-							valueBuilder.append(fieldValue + ", ");
+							valueBuilder.append("'" + fieldValue + "', ");
 
 						} catch (NoSuchMethodException e) {
 							e.printStackTrace();
