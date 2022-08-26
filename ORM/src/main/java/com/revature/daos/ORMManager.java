@@ -8,7 +8,7 @@ public interface ORMManager {
 	//C//
 	public void insertNewItem(Object o);
 	//R//
-	public <T> List<T> getInfoByItemNo(Class <T> unknownClass, int itemNum);
+	public <T> List<T> getInfoByItemNo(Class <?> unknownClass, Class <?> unknownClass2, int itemNum);
 	public <T> List<T> getInventoryOfAll(Class <T> unkownClass);
 	//U//
 	public void updateByItemNo(Object o, int itemNum, String column, String value);

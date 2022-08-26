@@ -92,7 +92,7 @@ public class ORMManagerImpl implements ORMManager{
 	}
 
 	@Override
-	public <T> List<T> getInfoByItemNo(Class<T> unknownClass, int itemNum) {
+	public <T> List<T> getInfoByItemNo(Class<?> unknownClass, Class<?> unknownClass2, int itemNum) {
 		
 		try(Connection conn = ConnectionUtil.getConnection()){
 			String[] x = unknownClass.getName().split("\\.");
@@ -107,7 +107,8 @@ public class ORMManagerImpl implements ORMManager{
 			while(result.next()) { 
 				try {
 					// create a new instance of the class being constructed
-					T newObject = unknownClass.getDeclaredConstructor().newInstance();
+					Object newObject = unknownClass.getDeclaredConstructor().newInstance();
+					Object newObject2 = unknownClass2.getDeclaredConstructor().newInstance();
 				
 				Field[] fields = unknownClass.getDeclaredFields();
 				for (Field field : fields) {
@@ -140,8 +141,41 @@ public class ORMManagerImpl implements ORMManager{
 						e.printStackTrace();
 					}
 				}
+				
+				Field[] fields2 = unknownClass2.getDeclaredFields();
+				for (Field field2 : fields2) {
 
-				unknownObjects.add(newObject);
+					String fieldName = field2.getName();
+	
+					// obtain the appropriate getter (using the field name)
+					String setterName = "set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+				
+					try {
+						// getting the type of the setter parameter, based on the field type
+						Class<?> setterParamType = unknownClass2.getDeclaredField(fieldName).getType();
+
+						// obtain the setter method using the setter name and setter parameter type
+						Method setter = unknownClass2.getMethod(setterName, setterParamType);
+
+						// below we define a utility method to convert the string field value to appropriate type for the field
+						Object fieldValue = convertStringToFieldType(result.getString(fieldName), setterParamType);
+
+						// we invoke the setter to populate the field of the object that's being created
+						setter.invoke(newObject2, fieldValue);
+
+					} catch (NoSuchFieldException e) {
+						e.printStackTrace();
+					} catch (NoSuchMethodException e) {
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					} catch (InvocationTargetException | InstantiationException e) {
+						e.printStackTrace();
+					}
+				}
+
+				unknownObjects.add((T) newObject);
+				unknownObjects.add((T) newObject2);
 				
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | NoSuchMethodException | SecurityException e1) {
